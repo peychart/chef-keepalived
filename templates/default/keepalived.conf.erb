@@ -69,9 +69,9 @@ vrrp_instance <%= name.upcase %> {
   }
   <% end -%>
   virtual_ipaddress {
-    <% Array(instance['ip_addresses'][node.domain] || instance['ip_addresses']).each do |address| %>
+    <% addresses=(instance['ip_addresses'][node.domain] || instance['ip_addresses']); ((addresses.is_a? Array) ? addresses : Array(addresses)).each do |address| %>
     <%= address %>
-    <% end if instance['ip_addresses'] %>
+    <% end if addresses != nil %>
   }
   <% instance['virtual_servers'].each do |virtual_server| %>
   virtual_server <%= virtual_server['bind'][node.domain] || virtual_server['bind'] %> {
@@ -95,9 +95,9 @@ vrrp_instance <%= name.upcase %> {
       }
       <% end; end %>
     }
-    <% end if instance['virtual_servers'] %>
+    <% end if virtual_server['virtual_servers'] != nil %>
   }
-  <% end %>
+  <% end if instance['virtual_servers'] != nil %>
 
   <% if instance['track_script'] %>
   track_script {
