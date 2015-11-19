@@ -95,7 +95,7 @@ vrrp_instance <%= name.upcase %> {
       }
       <% end; end %>
     }
-    <% end if virtual_server['virtual_servers'] != nil %>
+    <% end if virtual_server['real_servers'] != nil %>
   }
   <% end if instance['virtual_servers'] != nil %>
 
