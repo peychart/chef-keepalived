@@ -42,7 +42,7 @@ end
 node['keepalived']['instances'].each do |name, instance|
   instance['virtual_servers'].each do |virtual_server|
     virtual_server['real_servers'].each do |real_server|
-      if (real_server['MISC_CHECK']['misc_script'][node.domain] || real_server['MISC_CHECK']['misc_script'])
+      if real_server['MISC_CHECK'] && real_server['MISC_CHECK']['misc_script'] && (real_server['MISC_CHECK']['misc_script'][node.domain] || real_server['MISC_CHECK']['misc_script'])
         file real_server['MISC_CHECK']['misc_path'][node.domain] || real_server['MISC_CHECK']['misc_path'] do
           mode 0755
           content (real_server['MISC_CHECK']['misc_script'][node.domain] || real_server['MISC_CHECK']['misc_script'])
