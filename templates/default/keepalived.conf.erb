@@ -75,7 +75,7 @@ vrrp_instance <%= name.upcase %> {
   }
   <% instance['virtual_servers'].each do |virtual_server| %>
   virtual_server <%= virtual_server['bind'][node.domain] || virtual_server['bind'] %> {
-    <% Array(virtual_server['options']).each do |option| %>
+    <% Array( (virtual_server['options'].is_a? Hash) ? virtual_server['options'][node.domain] : virtual_server['options'] ).each do |option| %>
     <%= option %>
     <% end %>
     <% virtual_server['real_servers'].each do |real_server| %>
@@ -86,11 +86,23 @@ vrrp_instance <%= name.upcase %> {
       <% real_server.each do |name, value|; if name != "bind" && name != "options" %>
       <%= "#{name} {" %>
         <% value.each do |n, v|; if n != "misc_script" %>
-        <% if v.is_a? Hash %>
+         <% if v.is_a? Hash %>
+          <% if v[node.domain] %>
         <%= "#{n} #{v[node.domain]}" %>
-        <% else %>
+          <% else %>
+        <%= "#{n} {" %>
+           <% v.each do |m, w| %>
+            <% if w.is_a? Hash %>
+          <%= "#{m} #{w[node.domain]}" %>
+            <% else %>
+          <%= "#{m} #{w}" %>
+            <% end %>
+           <% end %>
+        <%= "}" %>
+          <% end %>
+         <% else %>
         <%= "#{n} #{v}" %>
-        <% end %>
+         <% end %>
         <% end; end %>
       }
       <% end; end %>
